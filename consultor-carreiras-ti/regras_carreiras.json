@@ -1,0 +1,185 @@
+{
+  "versao": 1,
+  "escala": {
+    "min": 1,
+    "max": 5,
+    "neutro": 3
+  },
+  "descricao": "Pesos de 0 a 5 para afinidades (não representam probabilidades de contratação).",
+  "perguntas": [
+    {
+      "id": "logic",
+      "texto": "Lógica e resolução de problemas",
+      "pesos": {
+        "backend": 5,
+        "frontend": 2,
+        "data_science": 4,
+        "data_engineering": 4,
+        "security": 4,
+        "devops": 4,
+        "cloud": 4,
+        "mobile": 4,
+        "qa": 4,
+        "product": 2
+      }
+    },
+    {
+      "id": "math_statistics",
+      "texto": "Matemática e estatística",
+      "pesos": {
+        "backend": 2,
+        "frontend": 1,
+        "data_science": 5,
+        "data_engineering": 4,
+        "security": 2,
+        "devops": 2,
+        "cloud": 2,
+        "mobile": 1,
+        "qa": 2,
+        "product": 3
+      }
+    },
+    {
+      "id": "visual_design",
+      "texto": "Design visual e experiência do usuário",
+      "pesos": {
+        "backend": 1,
+        "frontend": 5,
+        "data_science": 1,
+        "data_engineering": 1,
+        "security": 1,
+        "devops": 1,
+        "cloud": 1,
+        "mobile": 4,
+        "qa": 2,
+        "product": 3
+      }
+    },
+    {
+      "id": "data_analysis",
+      "texto": "Análise e organização de dados",
+      "pesos": {
+        "backend": 2,
+        "frontend": 2,
+        "data_science": 5,
+        "data_engineering": 5,
+        "security": 3,
+        "devops": 3,
+        "cloud": 3,
+        "mobile": 1,
+        "qa": 3,
+        "product": 4
+      }
+    },
+    {
+      "id": "networks_security",
+      "texto": "Redes e segurança da informação",
+      "pesos": {
+        "backend": 2,
+        "frontend": 1,
+        "data_science": 1,
+        "data_engineering": 2,
+        "security": 5,
+        "devops": 4,
+        "cloud": 5,
+        "mobile": 1,
+        "qa": 2,
+        "product": 1
+      }
+    },
+    {
+      "id": "automation",
+      "texto": "Automação de processos e testes",
+      "pesos": {
+        "backend": 3,
+        "frontend": 2,
+        "data_science": 3,
+        "data_engineering": 4,
+        "security": 4,
+        "devops": 5,
+        "cloud": 4,
+        "mobile": 2,
+        "qa": 5,
+        "product": 1
+      }
+    },
+    {
+      "id": "cloud_infrastructure",
+      "texto": "Infraestrutura, servidores e nuvem",
+      "pesos": {
+        "backend": 3,
+        "frontend": 1,
+        "data_science": 2,
+        "data_engineering": 4,
+        "security": 3,
+        "devops": 5,
+        "cloud": 5,
+        "mobile": 2,
+        "qa": 2,
+        "product": 2
+      }
+    },
+    {
+      "id": "mobile_apps",
+      "texto": "Desenvolvimento de aplicativos móveis",
+      "pesos": {
+        "backend": 3,
+        "frontend": 4,
+        "data_science": 1,
+        "data_engineering": 1,
+        "security": 1,
+        "devops": 1,
+        "cloud": 2,
+        "mobile": 5,
+        "qa": 3,
+        "product": 3
+      }
+    },
+    {
+      "id": "quality_testing",
+      "texto": "Qualidade e identificação de falhas",
+      "pesos": {
+        "backend": 3,
+        "frontend": 3,
+        "data_science": 2,
+        "data_engineering": 3,
+        "security": 3,
+        "devops": 4,
+        "cloud": 3,
+        "mobile": 3,
+        "qa": 5,
+        "product": 3
+      }
+    },
+    {
+      "id": "product_strategy",
+      "texto": "Planejamento de produtos e negócio",
+      "pesos": {
+        "backend": 2,
+        "frontend": 3,
+        "data_science": 3,
+        "data_engineering": 2,
+        "security": 2,
+        "devops": 2,
+        "cloud": 2,
+        "mobile": 3,
+        "qa": 3,
+        "product": 5
+      }
+    }
+  ],
+  "pesos_regras_classicas": {
+    "activity": 6,
+    "value": 5,
+    "interest": 4,
+    "workstyle": 3,
+    "tool": 2,
+    "math_high_science": 3,
+    "math_high_engineering": 1,
+    "math_mid_science": 1,
+    "cross_science": 5,
+    "cross_engineering": 5,
+    "cross_security": 4,
+    "cross_devops": 4
+  }
+}

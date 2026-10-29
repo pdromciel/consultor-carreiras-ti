@@ -3,6 +3,15 @@
 Sistema especialista em **Python + Experta + Streamlit**, desenvolvido para a
 atividade da disciplina **Inteligência Artificial — UNIPAC Barbacena**.
 
+## Evolução — Etapa 2, commit 1
+
+- Adicionada base externa `regras_carreiras.json` com pesos de todas as 10 trilhas, perguntas de afinidade gradual e os pesos do modo clássico.
+- Novo módulo `src/gradual.py` para carregar e validar o JSON e calcular índices de compatibilidade de 0 a 100 por somatório ponderado.
+- Novo modo no Streamlit com dez perguntas na escala 1–5, ranking Top 3 e gráfico.
+- Modo original com Experta preservado para comparação.
+- Ainda pendentes: análise de gaps, penalidades lógicas, roadmap e wizard em etapas (commits 2 e 3).
+- **Atenção:** os percentuais são índices internos de afinidade, não probabilidades estatísticas.
+
 ## Funcionalidades
 
 - Entrevista dinâmica com seis perguntas (matemática, atividade, ferramenta,
@@ -56,13 +65,16 @@ frontend e gestor de produto, além de validação das regras e entradas.
 
 ```text
 consultor-carreiras-ti/
-├── app.py                    # Interface Streamlit
+├── app.py                    # Interface Streamlit (clássico e gradual)
+├── regras_carreiras.json     # Base externa de pesos e perguntas
 ├── src/
 │   ├── __init__.py
-│   ├── engine.py             # Fatos, motor de inferência e regras
+│   ├── engine.py             # Fatos, motor clássico e regras
+│   ├── gradual.py            # Motor ponderado gradual
 │   └── knowledge.py          # Base de conhecimento e questionário
 ├── tests/
-│   └── test_engine.py        # Personas e validações
+│   ├── test_engine.py        # Personas e validações
+│   └── test_gradual.py       # Validação da avaliação gradual
 ├── docs/
 │   └── MATRIZ_DE_DECISAO.md  # Mapeamento dos pesos e regras
 ├── .streamlit/config.toml    # Tema

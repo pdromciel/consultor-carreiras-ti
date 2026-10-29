@@ -13,6 +13,9 @@ for _attr in ('Mapping', 'MutableMapping', 'Sequence', 'Iterable', 'Set'):
         setattr(collections, _attr, getattr(collections.abc, _attr))
 
 from experta import Fact, KnowledgeEngine, Rule, MATCH, AS, TEST
+from .gradual import load_rules
+CLASSIC_WEIGHTS = load_rules()["pesos_regras_classicas"]
+
 from .knowledge import (CAREERS, Evidence, ACTIVITY_TO_CAREER,
                         VALUE_TO_CAREER, INTEREST_TO_CAREER,
                         WORKSTYLE_TO_CAREER, TOOL_TO_CAREERS, QUESTIONS)
@@ -33,36 +36,36 @@ class CareerEngine(KnowledgeEngine):
     @Rule(Profile(tool=MATCH.tool))
     def tool_affinity(self, tool):
         for career in TOOL_TO_CAREERS[tool]:
-            self.add('R31 · Ferramenta', career, 2, f'Familiaridade com {tool}.')
+            self.add('R31 · Ferramenta', career, CLASSIC_WEIGHTS['tool'], f'Familiaridade com {tool}.')
 
     @Rule(Profile(workstyle=MATCH.workstyle))
     def style_affinity(self, workstyle):
-        self.add('R32 · Estilo', WORKSTYLE_TO_CAREER[workstyle], 3,
+        self.add('R32 · Estilo', WORKSTYLE_TO_CAREER[workstyle], CLASSIC_WEIGHTS['workstyle'],
                  f'Seu estilo de trabalho combina com: {workstyle.lower()}.')
 
     @Rule(Profile(math=MATCH.math))
     def mathematics(self, math):
         if math == 'Alta':
-            self.add('R33 · Matemática', 'data_science', 3, 'Alta afinidade com matemática e estatística.')
-            self.add('R33 · Matemática', 'data_engineering', 1, 'Base matemática útil no trabalho com dados.')
+            self.add('R33 · Matemática', 'data_science', CLASSIC_WEIGHTS['math_high_science'], 'Alta afinidade com matemática e estatística.')
+            self.add('R33 · Matemática', 'data_engineering', CLASSIC_WEIGHTS['math_high_engineering'], 'Base matemática útil no trabalho com dados.')
         elif math == 'Média':
-            self.add('R33 · Matemática', 'data_science', 1, 'Afinidade intermediária com matemática.')
+            self.add('R33 · Matemática', 'data_science', CLASSIC_WEIGHTS['math_mid_science'], 'Afinidade intermediária com matemática.')
 
     @Rule(Profile(activity='Criar modelos preditivos', value='Previsões e descobertas em dados'))
     def cross_science(self):
-        self.add('R34 · Cruzamento', 'data_science', 5, 'Combinação de modelagem preditiva com entrega de insights.')
+        self.add('R34 · Cruzamento', 'data_science', CLASSIC_WEIGHTS['cross_science'], 'Combinação de modelagem preditiva com entrega de insights.')
 
     @Rule(Profile(activity='Criar pipelines de dados', value='Dados confiáveis e disponíveis'))
     def cross_engineering(self):
-        self.add('R35 · Cruzamento', 'data_engineering', 5, 'Construção de pipelines para disponibilizar dados confiáveis.')
+        self.add('R35 · Cruzamento', 'data_engineering', CLASSIC_WEIGHTS['cross_engineering'], 'Construção de pipelines para disponibilizar dados confiáveis.')
 
     @Rule(Profile(activity='Investigar vulnerabilidades', interest='Hacking ético e redes'))
     def cross_security(self):
-        self.add('R36 · Cruzamento', 'security', 4, 'Interesse em segurança somado à investigação de vulnerabilidades.')
+        self.add('R36 · Cruzamento', 'security', CLASSIC_WEIGHTS['cross_security'], 'Interesse em segurança somado à investigação de vulnerabilidades.')
 
     @Rule(Profile(activity='Automatizar entregas e servidores', value='Implantações rápidas e confiáveis'))
     def cross_devops(self):
-        self.add('R37 · Cruzamento', 'devops', 4, 'Automação combinada à confiabilidade das entregas.')
+        self.add('R37 · Cruzamento', 'devops', CLASSIC_WEIGHTS['cross_devops'], 'Automação combinada à confiabilidade das entregas.')
 
 # Regras especializadas por opção: criadas como métodos distintos e decoradas com @Rule.
 # Cada uma é registrada pelo metaclass do Experta como produção independente.
@@ -74,9 +77,9 @@ def _build_rule(field, selected, career, number, weight, description):
     return Rule(Profile(**{field: selected}))(firing)
 
 for _start, _field, _mapping, _weight, _description in (
-    (1, 'activity', ACTIVITY_TO_CAREER, 6, 'Atividade principal'),
-    (11, 'value', VALUE_TO_CAREER, 5, 'Entrega de valor'),
-    (21, 'interest', INTEREST_TO_CAREER, 4, 'Interesse técnico'),
+    (1, 'activity', ACTIVITY_TO_CAREER, CLASSIC_WEIGHTS['activity'], 'Atividade principal'),
+    (11, 'value', VALUE_TO_CAREER, CLASSIC_WEIGHTS['value'], 'Entrega de valor'),
+    (21, 'interest', INTEREST_TO_CAREER, CLASSIC_WEIGHTS['interest'], 'Interesse técnico'),
 ):
     for _offset, (_selected, _career) in enumerate(_mapping.items()):
         setattr(CareerEngine, f'rule_{_start + _offset:02d}',
