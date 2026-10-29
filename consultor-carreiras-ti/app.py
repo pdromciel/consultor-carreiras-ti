@@ -1,128 +1,133 @@
-"""Interface web do Consultor Inteligente de Carreiras em TI."""
+"""Interface da Etapa 2: entrevista em etapas, resultado explicável e roadmap."""
 import streamlit as st
 from src.engine import recommend
 from src.gradual import load_rules, recommend_gradual
 from src.desenvolvimento import avaliar_gaps
-from src.knowledge import QUESTIONS, CAREERS
+from src.knowledge import CAREERS, QUESTIONS
 
-st.set_page_config(page_title='Consultor de Carreiras em TI', page_icon='🧭', layout='wide')
-st.markdown('''<style>
-.block-container {max-width: 1050px; padding-top: 2rem;}
-.hero {background: linear-gradient(120deg,#132b50,#2255a4);padding:2rem;border-radius:18px;color:white;margin-bottom:1.6rem}
-.hero h1 {color:white;font-size:2rem;margin-bottom:.5rem}
-.hero p {color:#e2eaff;margin:0}
-[data-testid="stMetricValue"] {font-size:2rem}
-</style>''', unsafe_allow_html=True)
-st.markdown('''<div class="hero"><h1>🧭 Consultor Inteligente de Carreiras em TI</h1>
-<p>Descubra qual das 10 trilhas de tecnologia mais combina com seu perfil.
-Sistema especialista baseado em regras, com justificativas transparentes.</p></div>''', unsafe_allow_html=True)
-st.caption('UNIPAC Barbacena · Inteligência Artificial · Sistema Especialista com Experta')
+st.set_page_config(page_title="Consultor de Carreiras em TI", page_icon="🧭", layout="wide")
+st.markdown("""<style>
+.block-container {max-width: 1100px; padding-top: 2rem}
+.hero {background:linear-gradient(115deg,#153158,#2c5da3);padding:2rem;border-radius:16px;color:white;margin-bottom:1.5rem}
+.hero h1 {color:white;font-size:2rem}.hero p {color:#e4ecfa}
+</style>""", unsafe_allow_html=True)
+st.markdown('<div class="hero"><h1>🧭 Consultor Inteligente de Carreiras em TI</h1><p>Dez trilhas · regras ponderadas · análise de lacunas · plano de desenvolvimento</p></div>', unsafe_allow_html=True)
+st.caption("UNIPAC Barbacena · Inteligência Artificial · Sistema especialista baseado em regras")
 
-mode = st.radio('Modo de avaliação', ['Avaliação gradual (Etapa 2)', 'Questionário clássico'], horizontal=True)
+config = load_rules()
+if 'etapa' not in st.session_state:
+    st.session_state.etapa = 0
 
-if mode == 'Questionário clássico':
-    st.caption('Modo original preservado para comparação com a primeira etapa.')
-
-if mode == 'Questionário clássico':
-    with st.form('entrevista'):
-        st.subheader('Sua entrevista de carreira')
-        st.write('Responda às seis perguntas. Não existem respostas certas ou erradas.')
-        answers = {}
-        for index, (field, question, options) in enumerate(QUESTIONS, 1):
-            answers[field] = st.selectbox(f'{index}. {question}', options, index=None,
-                                          placeholder='Selecione uma resposta...', key=field)
-        submitted = st.form_submit_button('🔎 Analisar meu perfil', type='primary', use_container_width=True)
-if mode == 'Questionário clássico' and submitted:
-    if any(value is None for value in answers.values()):
-        st.warning('Responda a todas as perguntas para receber sua recomendação.')
+modo = st.radio('Modo de avaliação', ['Etapa 2 — avaliação avançada', 'Modo clássico — Experta'], horizontal=True)
+if modo == 'Modo clássico — Experta':
+    st.info('O questionário original foi preservado para comparar os métodos de inferência.')
+    with st.form('classic'):
+        respostas = {field: st.selectbox(f'{idx}. {question}', options, index=None, placeholder='Selecione...', key='old_'+field)
+                     for idx,(field,question,options) in enumerate(QUESTIONS,1)}
+        enviar = st.form_submit_button('Analisar com o motor clássico', type='primary')
+    if enviar:
+        if any(v is None for v in respostas.values()):
+            st.warning('Responda todas as perguntas.')
+        else:
+            st.session_state.classic_result = recommend(respostas)
+    if 'classic_result' in st.session_state:
+        r = st.session_state.classic_result
+        st.success(f"Trilha indicada: {CAREERS[r['career']][0]}")
+        st.write(CAREERS[r['career']][1])
+        st.metric('Pontos no modo clássico',r['scores'][r['career']])
+        for evidence in r['reasons']:
+            st.write(f'• {evidence.rule} (+{evidence.points}) — {evidence.reason}')
+        st.bar_chart({CAREERS[c][0]:r['scores'][c] for c in r['ranking']}, horizontal=True)
+else:
+    nomes = ['1. Perfil pessoal', '2. Afinidades técnicas', '3. Objetivos de carreira', '4. Resultado e roadmap']
+    st.progress(st.session_state.etapa / 3)
+    st.caption('  ·  '.join(('**'+n+'**' if i==st.session_state.etapa else n) for i,n in enumerate(nomes)))
+    etapa = st.session_state.etapa
+    if etapa == 0:
+        st.subheader('Sobre você')
+        with st.form('perfil'):
+            nome = st.text_input('Como gostaria de ser chamado(a)? (opcional)',value=st.session_state.get('nome',''))
+            experiencia = st.selectbox('Sua experiência em TI', ['Iniciante','Estudante','Já desenvolvo projetos','Atuo profissionalmente'],index=['Iniciante','Estudante','Já desenvolvo projetos','Atuo profissionalmente'].index(st.session_state.get('experiencia','Iniciante')))
+            avancar = st.form_submit_button('Continuar →', type='primary')
+        if avancar:
+            st.session_state.nome=nome.strip()
+            st.session_state.experiencia=experiencia
+            st.session_state.etapa=1
+            st.rerun()
+    elif etapa == 1:
+        st.subheader('Afinidades técnicas')
+        st.write('Avalie seu **interesse**, não seu domínio técnico. 1 = muito baixo · 3 = neutro · 5 = muito alto.')
+        with st.form('afinidades'):
+            answers = {q['id']:st.slider(q['texto'],1,5,st.session_state.get('afinidades',{}).get(q['id'],3),key='aff_'+q['id']) for q in config['perguntas']}
+            proximo = st.form_submit_button('Calcular e continuar →',type='primary')
+        if st.button('← Voltar ao perfil'):
+            st.session_state.etapa=0;st.rerun()
+        if proximo:
+            st.session_state.afinidades=answers
+            st.session_state.resultado=recommend_gradual(answers,config)
+            st.session_state.etapa=2
+            st.rerun()
+    elif etapa == 2:
+        r=st.session_state.get('resultado')
+        if not r:
+            st.session_state.etapa=1;st.rerun()
+        st.subheader('Objetivos e conhecimento atual')
+        st.caption('Selecione uma das três trilhas mais compatíveis e informe seu nível atual em cada competência (0 a 5).')
+        labels={k:CAREERS[k][0] for k in r['top3']}
+        trilha=st.selectbox('Trilha de interesse',r['top3'],format_func=lambda k:labels[k],key='chosen_career')
+        with st.form('competencias'):
+            conhecimentos={item['id']:st.slider(item['nome'],0,5,st.session_state.get('conhecimentos',{}).get(trilha,{}).get(item['id'],0),key=f"skill_{trilha}_{item['id']}") for item in config['competencias'][trilha]}
+            gerar=st.form_submit_button('Gerar meu resultado →',type='primary')
+        if st.button('← Voltar às afinidades'):
+            st.session_state.etapa=1;st.rerun()
+        if gerar:
+            st.session_state.conhecimentos={**st.session_state.get('conhecimentos',{}),trilha:conhecimentos}
+            st.session_state.plano=avaliar_gaps(trilha,conhecimentos,config)
+            st.session_state.etapa=3;st.rerun()
     else:
-        st.session_state.result = recommend(answers)
-        st.session_state.answers = answers
-        st.session_state.result_mode = 'classic'
-
-
-if mode == 'Avaliação gradual (Etapa 2)':
-    config = load_rules()
-    st.subheader('Afinidades técnicas (escala de 1 a 5)')
-    st.caption('1 = nenhuma afinidade · 3 = neutro · 5 = muita afinidade. Considere seus interesses, não seu conhecimento atual.')
-    with st.form('afinidades_graduais'):
-        gradual_answers = {}
-        for item in config['perguntas']:
-            gradual_answers[item['id']] = st.slider(item['texto'], 1, 5, 3, key='gradual_' + item['id'])
-        gradual_submitted = st.form_submit_button('🔎 Calcular compatibilidade', type='primary', use_container_width=True)
-    if gradual_submitted:
-        st.session_state.result = recommend_gradual(gradual_answers, config)
-        st.session_state.result_mode = 'gradual'
-    if st.session_state.get('result_mode') == 'gradual' and 'result' in st.session_state:
-        result = st.session_state.result
+        r=st.session_state.get('resultado');p=st.session_state.get('plano')
+        if not r or not p:
+            st.session_state.etapa=0;st.rerun()
+        st.subheader('Seu resultado personalizado')
+        if st.session_state.get('nome'):
+            st.write(f"Olá, **{st.session_state.nome}**! Estas são suas recomendações.")
+        st.caption(f"Perfil: {st.session_state.get('experiencia','não informado')} · Índices heurísticos, não probabilidades de emprego.")
+        a,b,c=st.columns(3)
+        for col,i in zip((a,b,c),range(3)):
+            k=r['top3'][i]
+            col.metric(f'{i+1}º {CAREERS[k][0]}',f"{r['scores'][k]:.1f}%")
+        st.markdown('#### Compatibilidade entre as dez trilhas')
+        st.bar_chart({CAREERS[k][0]:r['scores'][k] for k in r['ranking']},horizontal=True)
+        with st.expander('Como o sistema calculou as recomendações?'):
+            st.write('Cada afinidade de 1 a 5 é ponderada por carreira com pesos do JSON. A referência neutra é 50%; conflitos de baixa afinidade podem gerar penalidades.')
+            st.write('**Contribuições para a primeira trilha:**')
+            for item in r['contributions'][r['career']]:
+                if item['impact']:
+                    st.write(f"• {item['question']}: resposta {item['answer']}; contribuição {item['impact']:+g}")
+            for k in r['top3']:
+                pen=r['penalties'][k]
+                st.write(f"{CAREERS[k][0]}: desconto {pen['desconto']:.1f} p.p. · {len(pen['conflitos'])} conflito(s)")
         st.divider()
-        st.subheader('Top 3 — índice de compatibilidade')
-        for i, key in enumerate(result['top3'], 1):
-            st.write(f"**{i}º {CAREERS[key][0]} — {result['scores'][key]:.1f}%**")
-        st.bar_chart({CAREERS[k][0]: result['scores'][k] for k in result['ranking']}, horizontal=True)
-        with st.expander('Justificativa da primeira carreira'):
-            for impact in result['contributions'][result['career']]:
-                if impact['impact'] != 0:
-                    st.write(f"{impact['question']}: resposta {impact['answer']} · contribuição {impact['impact']:+g}")
-        st.caption('Os percentuais são índices internos de afinidade, não probabilidades de contratação.')
-        pena = result['penalties'][result['career']]
-        with st.expander('Análise de conflitos e penalidades'):
-            st.write(f"Desconto na trilha recomendada: {pena['desconto']:.1f} ponto(s) percentual(is)")
-            if pena['conflitos']:
-                labels = {q['id']: q['texto'] for q in config['perguntas']}
-                for item in pena['conflitos']:
-                    st.write(f"• Baixa afinidade: {labels[item]}")
-            else:
-                st.write('Não foram identificados conflitos fortes nessa trilha.')
-        st.divider()
-        st.subheader('Competências atuais e preparação para nível júnior')
-        st.caption('Informe quanto conhece de cada competência: 0 = desconheço, 3 = pratico com apoio, 5 = avançado. Metas pedagógicas estimadas.')
-        trilha = st.selectbox('Trilha para analisar', result['top3'],
-                              format_func=lambda key: CAREERS[key][0], key='trilha_gaps')
-        with st.form('form_gaps'):
-            conhecimentos = {}
-            for item in config['competencias'][trilha]:
-                conhecimentos[item['id']] = st.slider(item['nome'], 0, 5, 0,
-                                                       key='gap_' + trilha + '_' + item['id'])
-            enviar_gaps = st.form_submit_button('Gerar meu plano de estudos', type='primary')
-        if enviar_gaps:
-            st.session_state.plano = avaliar_gaps(trilha, conhecimentos, config)
-        if 'plano' in st.session_state and st.session_state.plano['carreira'] == trilha:
-            plano = st.session_state.plano
-            st.metric('Metas iniciais atingidas', f"{plano['percentual_metas_atingidas']:.1f}%")
-            if plano['lacunas']:
-                st.warning(f"{plano['total_lacunas']} competência(s) com lacunas identificadas")
-            else:
-                st.success('Você atingiu todas as metas pedagógicas informadas para esta trilha.')
-            st.markdown('#### Roadmap priorizado')
-            for etapa in plano['roadmap']:
-                st.markdown(f"**{etapa['ordem']}. {etapa['orientacao']}**\n\nProjeto para portfólio: {etapa['projeto']}")
-            st.markdown('#### Cursos e certificações para pesquisar')
-            for sugestao in plano['certificacoes']:
-                st.write('• ' + sugestao)
-            st.caption('As sugestões são referências de estudo; confira preços, disponibilidade e pré-requisitos nos sites oficiais.')
-
-if mode == 'Questionário clássico' and st.session_state.get('result_mode') == 'classic' and 'result' in st.session_state:
-    result = st.session_state.result
-    name, description, next_steps = CAREERS[result['career']]
-    st.divider()
-    st.subheader('🎯 Sua trilha recomendada')
-    st.success(f'**{name}**')
-    st.write(description)
-    a, b = st.columns(2)
-    a.metric('Pontos de compatibilidade', result['scores'][result['career']])
-    b.metric('Regras disparadas', result['total_rules_fired'])
-    st.markdown('#### Por que essa trilha foi recomendada?')
-    for evidence in result['reasons']:
-        st.markdown(f'- **{evidence.rule} (+{evidence.points})** — {evidence.reason}')
-    st.info(f'**Próximos assuntos para estudar:** {next_steps}')
-    st.markdown('#### Comparação entre as 10 trilhas')
-    for career in result['ranking']:
-        label = CAREERS[career][0]
-        score = result['scores'][career]
-        st.write(f'**{label}** — {score} pontos')
-        st.progress(score / max(result['scores'].values(), default=1) if max(result['scores'].values()) else 0)
-    with st.expander('Ver todas as regras que contribuíram para a análise'):
-        for evidence in sorted(result['evidence'], key=lambda e: (e.career, e.rule)):
-            st.write(f'**{CAREERS[evidence.career][0]}** | {evidence.rule}: +{evidence.points} — {evidence.reason}')
-    st.caption('O resultado é uma orientação exploratória baseada nas suas respostas, não um diagnóstico definitivo de carreira.')
+        st.subheader(f"Lacunas para nível júnior — {CAREERS[p['carreira']][0]}")
+        x,y=st.columns(2)
+        x.metric('Metas atingidas',f"{p['percentual_metas_atingidas']:.1f}%")
+        y.metric('Competências a desenvolver',p['total_lacunas'])
+        st.caption('Os níveis júnior são metas pedagógicas estimadas para orientação, não exigências oficiais do mercado.')
+        for item in p['competencias']:
+            st.write(f"**{item['nome']}** — atual {item['atual']}/5 · meta {item['nivel_junior']}/5")
+            st.progress(min(item['atual']/item['nivel_junior'],1.0))
+        st.markdown('#### Roadmap priorizado e projetos de portfólio')
+        for etapa_roadmap in p['roadmap']:
+            with st.expander(f"{etapa_roadmap['ordem']}. {etapa_roadmap['orientacao']}",expanded=etapa_roadmap['ordem']==1):
+                st.write('**Projeto no GitHub:** '+etapa_roadmap['projeto'])
+        st.markdown('#### Certificações e referências de estudo')
+        for cert in p['certificacoes']:
+            st.write('• '+cert)
+        st.caption('Confirme pré-requisitos, preços e disponibilidade das certificações nos sites oficiais.')
+        aa,bb=st.columns(2)
+        if aa.button('← Alterar objetivos'):
+            st.session_state.etapa=2;st.rerun()
+        if bb.button('Recomeçar entrevista',type='primary'):
+            for key in ['resultado','plano','afinidades','conhecimentos','chosen_career']:
+                st.session_state.pop(key,None)
+            st.session_state.etapa=0;st.rerun()

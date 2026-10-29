@@ -3,13 +3,23 @@
 Sistema especialista em **Python + Experta + Streamlit**, desenvolvido para a
 atividade da disciplina **Inteligência Artificial — UNIPAC Barbacena**.
 
+## Etapa 2 — Entrega final (commit 3)
+
+- Wizard em **4 telas**: perfil pessoal → afinidades 1–5 → objetivos e competências 0–5 → resultados.
+- Top 3 por afinidade ponderada, gráfico das 10 trilhas e explicações das regras e penalidades.
+- Análise de lacunas para nível júnior e roadmap com projetos e sugestões de certificação.
+- Modo clássico Experta preservado; base de conhecimento avançada mantida em `regras_carreiras.json`.
+- Testes de casos extremos em `tests/test_edge_cases.py`.
+
+**Uso:** `streamlit run app.py` (a partir da pasta que contém `app.py`).
+
 ## Evolução — Etapa 2, commit 1
 
 - Adicionada base externa `regras_carreiras.json` com pesos de todas as 10 trilhas, perguntas de afinidade gradual e os pesos do modo clássico.
 - Novo módulo `src/gradual.py` para carregar e validar o JSON e calcular índices de compatibilidade de 0 a 100 por somatório ponderado.
 - Novo modo no Streamlit com dez perguntas na escala 1–5, ranking Top 3 e gráfico.
 - Modo original com Experta preservado para comparação.
-- Ainda pendentes: análise de gaps, penalidades lógicas, roadmap e wizard em etapas (commits 2 e 3).
+- Estes recursos foram implementados nos commits 2 e 3.
 - **Atenção:** os percentuais são índices internos de afinidade, não probabilidades estatísticas.
 
 ## Funcionalidades
