@@ -2,6 +2,7 @@
 import streamlit as st
 from src.engine import recommend
 from src.gradual import load_rules, recommend_gradual
+from src.desenvolvimento import avaliar_gaps
 from src.knowledge import QUESTIONS, CAREERS
 
 st.set_page_config(page_title='Consultor de Carreiras em TI', page_icon='🧭', layout='wide')
@@ -63,7 +64,43 @@ if mode == 'Avaliação gradual (Etapa 2)':
             for impact in result['contributions'][result['career']]:
                 if impact['impact'] != 0:
                     st.write(f"{impact['question']}: resposta {impact['answer']} · contribuição {impact['impact']:+g}")
-        st.caption('Percentuais são índices internos de afinidade ponderada, não probabilidade de sucesso. Gaps, penalidades lógicas e roadmap serão acrescentados na próxima versão.')
+        st.caption('Os percentuais são índices internos de afinidade, não probabilidades de contratação.')
+        pena = result['penalties'][result['career']]
+        with st.expander('Análise de conflitos e penalidades'):
+            st.write(f"Desconto na trilha recomendada: {pena['desconto']:.1f} ponto(s) percentual(is)")
+            if pena['conflitos']:
+                labels = {q['id']: q['texto'] for q in config['perguntas']}
+                for item in pena['conflitos']:
+                    st.write(f"• Baixa afinidade: {labels[item]}")
+            else:
+                st.write('Não foram identificados conflitos fortes nessa trilha.')
+        st.divider()
+        st.subheader('Competências atuais e preparação para nível júnior')
+        st.caption('Informe quanto conhece de cada competência: 0 = desconheço, 3 = pratico com apoio, 5 = avançado. Metas pedagógicas estimadas.')
+        trilha = st.selectbox('Trilha para analisar', result['top3'],
+                              format_func=lambda key: CAREERS[key][0], key='trilha_gaps')
+        with st.form('form_gaps'):
+            conhecimentos = {}
+            for item in config['competencias'][trilha]:
+                conhecimentos[item['id']] = st.slider(item['nome'], 0, 5, 0,
+                                                       key='gap_' + trilha + '_' + item['id'])
+            enviar_gaps = st.form_submit_button('Gerar meu plano de estudos', type='primary')
+        if enviar_gaps:
+            st.session_state.plano = avaliar_gaps(trilha, conhecimentos, config)
+        if 'plano' in st.session_state and st.session_state.plano['carreira'] == trilha:
+            plano = st.session_state.plano
+            st.metric('Metas iniciais atingidas', f"{plano['percentual_metas_atingidas']:.1f}%")
+            if plano['lacunas']:
+                st.warning(f"{plano['total_lacunas']} competência(s) com lacunas identificadas")
+            else:
+                st.success('Você atingiu todas as metas pedagógicas informadas para esta trilha.')
+            st.markdown('#### Roadmap priorizado')
+            for etapa in plano['roadmap']:
+                st.markdown(f"**{etapa['ordem']}. {etapa['orientacao']}**\n\nProjeto para portfólio: {etapa['projeto']}")
+            st.markdown('#### Cursos e certificações para pesquisar')
+            for sugestao in plano['certificacoes']:
+                st.write('• ' + sugestao)
+            st.caption('As sugestões são referências de estudo; confira preços, disponibilidade e pré-requisitos nos sites oficiais.')
 
 if mode == 'Questionário clássico' and st.session_state.get('result_mode') == 'classic' and 'result' in st.session_state:
     result = st.session_state.result

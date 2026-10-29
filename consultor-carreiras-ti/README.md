@@ -117,3 +117,8 @@ Python 3.10+, Experta 1.9.4, Streamlit.
 
 Disciplina: Inteligência Artificial · Professor: Felipe Roncalli de Paula Carneiro.
 Instituição: Centro Universitário Presidente Antônio Carlos (UNIPAC Barbacena).
+
+
+## Etapa 2 — Commit 2: gaps e roadmap
+
+O modo gradual agora aplica penalidades lógicas e permite selecionar uma das três trilhas recomendadas, informar competências atuais (0–5) e gerar um roadmap de aprendizagem com sugestões de projetos e cursos/certificações. As regras de competências estão em `regras_carreiras.json`, e a análise em `src/desenvolvimento.py`. Consulte `docs/ETAPA2_COMMIT2.md`.

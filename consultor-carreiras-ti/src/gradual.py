@@ -19,6 +19,14 @@ def load_rules(path=None):
             raise ValueError("Pesos incompletos em " + question["id"])
         if any(not isinstance(v, (int, float)) or not 0 <= v <= 5 for v in question["pesos"].values()):
             raise ValueError("Pesos inválidos em " + question["id"])
+    if "competencias" in config:
+        if set(config["competencias"]) != set(CAREERS):
+            raise ValueError("Competências incompletas para as carreiras")
+        for career, items in config["competencias"].items():
+            if not items or len({item["id"] for item in items}) != len(items):
+                raise ValueError("Competências duplicadas ou ausentes: " + career)
+            if any(type(item["nivel_junior"]) is not int or not 1 <= item["nivel_junior"] <= 5 for item in items):
+                raise ValueError("Níveis júnior inválidos: " + career)
     return config
 
 
@@ -48,6 +56,15 @@ def recommend_gradual(answers, config=None):
              for item in config["perguntas"]),
             key=lambda item: (-item["impact"], item["question"]),
         )
+    penalties = {}
+    penalty_cfg = config.get("penalidades", {})
+    for career in CAREERS:
+        conflicts = [q["id"] for q in config["perguntas"] if
+                     answers[q["id"]] <= penalty_cfg.get("limiar_resposta", 0) and
+                     q["pesos"][career] >= penalty_cfg.get("peso_minimo", 6)]
+        discount = min(20.0, round(100 * penalty_cfg.get("fator", 0) * len(conflicts) / max(1, len(config["perguntas"])), 1))
+        scores[career] = round(max(0.0, min(100.0, scores[career] - discount)), 1)
+        penalties[career] = {"conflitos":conflicts,"desconto":discount}
     ranking = sorted(CAREERS, key=lambda c: (-scores[c], list(CAREERS).index(c)))
     return {"career":ranking[0], "ranking":ranking, "scores":scores,
-            "top3":ranking[:3], "contributions":contributions}
+            "top3":ranking[:3], "contributions":contributions, "penalties":penalties}

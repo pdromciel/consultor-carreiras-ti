@@ -1,5 +1,5 @@
 {
-  "versao": 1,
+  "versao": 2,
   "escala": {
     "min": 1,
     "max": 5,
@@ -181,5 +181,365 @@
     "cross_engineering": 5,
     "cross_security": 4,
     "cross_devops": 4
+  },
+  "competencias": {
+    "backend": [
+      {
+        "id": "python",
+        "nome": "Python ou Java",
+        "nivel_junior": 4,
+        "projeto": "Criar uma API REST com autenticação e testes"
+      },
+      {
+        "id": "sql",
+        "nome": "SQL e modelagem relacional",
+        "nivel_junior": 3,
+        "projeto": "Adicionar persistência e consultas à API"
+      },
+      {
+        "id": "api",
+        "nome": "APIs REST e HTTP",
+        "nivel_junior": 4,
+        "projeto": "Documentar endpoints usando OpenAPI"
+      },
+      {
+        "id": "git",
+        "nome": "Git e colaboração",
+        "nivel_junior": 3,
+        "projeto": "Publicar o projeto com README e histórico"
+      },
+      {
+        "id": "testing",
+        "nome": "Testes automatizados",
+        "nivel_junior": 3,
+        "projeto": "Criar testes unitários para regras da API"
+      }
+    ],
+    "frontend": [
+      {
+        "id": "html_css",
+        "nome": "HTML e CSS",
+        "nivel_junior": 4,
+        "projeto": "Criar interface responsiva e acessível"
+      },
+      {
+        "id": "javascript",
+        "nome": "JavaScript ou TypeScript",
+        "nivel_junior": 4,
+        "projeto": "Implementar interações e validações"
+      },
+      {
+        "id": "react",
+        "nome": "React ou equivalente",
+        "nivel_junior": 3,
+        "projeto": "Construir SPA com componentes reutilizáveis"
+      },
+      {
+        "id": "accessibility",
+        "nome": "Acessibilidade e UX",
+        "nivel_junior": 3,
+        "projeto": "Auditar navegação por teclado"
+      },
+      {
+        "id": "git",
+        "nome": "Git e colaboração",
+        "nivel_junior": 3,
+        "projeto": "Publicar frontend com documentação"
+      }
+    ],
+    "data_science": [
+      {
+        "id": "python",
+        "nome": "Python",
+        "nivel_junior": 4,
+        "projeto": "Criar notebook reproduzível"
+      },
+      {
+        "id": "statistics",
+        "nome": "Estatística básica",
+        "nivel_junior": 4,
+        "projeto": "Realizar análise estatística de dados públicos"
+      },
+      {
+        "id": "pandas",
+        "nome": "Pandas e tratamento de dados",
+        "nivel_junior": 4,
+        "projeto": "Criar pipeline de limpeza"
+      },
+      {
+        "id": "ml",
+        "nome": "Fundamentos de machine learning",
+        "nivel_junior": 3,
+        "projeto": "Treinar e avaliar modelo simples"
+      },
+      {
+        "id": "visualization",
+        "nome": "Visualização de dados",
+        "nivel_junior": 3,
+        "projeto": "Apresentar gráficos com insights"
+      }
+    ],
+    "data_engineering": [
+      {
+        "id": "sql",
+        "nome": "SQL",
+        "nivel_junior": 4,
+        "projeto": "Criar modelo analítico"
+      },
+      {
+        "id": "python",
+        "nome": "Python",
+        "nivel_junior": 4,
+        "projeto": "Construir extração e transformação de dados"
+      },
+      {
+        "id": "etl",
+        "nome": "ETL/ELT e pipelines",
+        "nivel_junior": 4,
+        "projeto": "Criar pipeline agendável"
+      },
+      {
+        "id": "data_model",
+        "nome": "Modelagem de dados",
+        "nivel_junior": 3,
+        "projeto": "Documentar esquema dimensional"
+      },
+      {
+        "id": "cloud_basics",
+        "nome": "Conceitos de nuvem",
+        "nivel_junior": 2,
+        "projeto": "Armazenar dataset em serviço cloud gratuito"
+      }
+    ],
+    "security": [
+      {
+        "id": "networks",
+        "nome": "Fundamentos de redes",
+        "nivel_junior": 4,
+        "projeto": "Montar laboratório local com redes isoladas"
+      },
+      {
+        "id": "linux",
+        "nome": "Linux e terminal",
+        "nivel_junior": 3,
+        "projeto": "Documentar hardening básico de máquina de testes"
+      },
+      {
+        "id": "security_basics",
+        "nome": "Segurança e OWASP",
+        "nivel_junior": 4,
+        "projeto": "Analisar uma aplicação de laboratório própria"
+      },
+      {
+        "id": "scripting",
+        "nome": "Scripts de automação",
+        "nivel_junior": 3,
+        "projeto": "Criar script de auditoria autorizado"
+      },
+      {
+        "id": "git",
+        "nome": "Git e documentação",
+        "nivel_junior": 2,
+        "projeto": "Publicar relatório de mitigação sem dados sensíveis"
+      }
+    ],
+    "devops": [
+      {
+        "id": "linux",
+        "nome": "Linux",
+        "nivel_junior": 4,
+        "projeto": "Provisionar ambiente local"
+      },
+      {
+        "id": "git",
+        "nome": "Git e colaboração",
+        "nivel_junior": 3,
+        "projeto": "Criar fluxo de branches"
+      },
+      {
+        "id": "docker",
+        "nome": "Docker e contêineres",
+        "nivel_junior": 4,
+        "projeto": "Conteinerizar aplicação de exemplo"
+      },
+      {
+        "id": "cicd",
+        "nome": "CI/CD",
+        "nivel_junior": 4,
+        "projeto": "Executar testes em pipeline"
+      },
+      {
+        "id": "monitoring",
+        "nome": "Observabilidade",
+        "nivel_junior": 3,
+        "projeto": "Adicionar logs e métricas básicas"
+      }
+    ],
+    "cloud": [
+      {
+        "id": "networks",
+        "nome": "Redes e protocolos",
+        "nivel_junior": 4,
+        "projeto": "Desenhar rede virtual"
+      },
+      {
+        "id": "cloud_basics",
+        "nome": "Serviços de nuvem",
+        "nivel_junior": 4,
+        "projeto": "Publicar serviço em camada gratuita"
+      },
+      {
+        "id": "iam",
+        "nome": "IAM e controle de acesso",
+        "nivel_junior": 3,
+        "projeto": "Aplicar privilégio mínimo em ambiente de teste"
+      },
+      {
+        "id": "iac",
+        "nome": "Infraestrutura como código",
+        "nivel_junior": 3,
+        "projeto": "Descrever recursos em Terraform"
+      },
+      {
+        "id": "cost",
+        "nome": "Custos e arquitetura",
+        "nivel_junior": 3,
+        "projeto": "Documentar limites de custo e escalabilidade"
+      }
+    ],
+    "mobile": [
+      {
+        "id": "javascript",
+        "nome": "JavaScript/TypeScript ou Dart",
+        "nivel_junior": 4,
+        "projeto": "Criar telas de aplicativo"
+      },
+      {
+        "id": "mobile_framework",
+        "nome": "React Native ou Flutter",
+        "nivel_junior": 4,
+        "projeto": "Criar app com navegação"
+      },
+      {
+        "id": "api",
+        "nome": "Integração de APIs",
+        "nivel_junior": 3,
+        "projeto": "Consumir serviço REST"
+      },
+      {
+        "id": "ui",
+        "nome": "Design de interfaces móveis",
+        "nivel_junior": 3,
+        "projeto": "Desenhar telas responsivas"
+      },
+      {
+        "id": "testing",
+        "nome": "Testes e depuração",
+        "nivel_junior": 3,
+        "projeto": "Adicionar testes de componentes"
+      }
+    ],
+    "qa": [
+      {
+        "id": "testing",
+        "nome": "Tipos e técnicas de testes",
+        "nivel_junior": 4,
+        "projeto": "Elaborar plano de testes"
+      },
+      {
+        "id": "automation",
+        "nome": "Automação de testes",
+        "nivel_junior": 4,
+        "projeto": "Automatizar fluxo web com Playwright"
+      },
+      {
+        "id": "api",
+        "nome": "Testes de API",
+        "nivel_junior": 3,
+        "projeto": "Criar cenários positivos e negativos"
+      },
+      {
+        "id": "git",
+        "nome": "Git e CI",
+        "nivel_junior": 3,
+        "projeto": "Integrar testes no CI"
+      },
+      {
+        "id": "bug_reporting",
+        "nome": "Relatórios de defeito",
+        "nivel_junior": 4,
+        "projeto": "Documentar evidências de bugs"
+      }
+    ],
+    "product": [
+      {
+        "id": "discovery",
+        "nome": "Discovery e entrevistas",
+        "nivel_junior": 4,
+        "projeto": "Mapear problema de usuários"
+      },
+      {
+        "id": "prioritization",
+        "nome": "Priorização e roadmap",
+        "nivel_junior": 4,
+        "projeto": "Criar backlog priorizado"
+      },
+      {
+        "id": "metrics",
+        "nome": "Métricas de produto",
+        "nivel_junior": 3,
+        "projeto": "Definir objetivos e indicadores"
+      },
+      {
+        "id": "communication",
+        "nome": "Comunicação e stakeholders",
+        "nivel_junior": 4,
+        "projeto": "Produzir apresentação de estratégia"
+      },
+      {
+        "id": "agile",
+        "nome": "Métodos ágeis",
+        "nivel_junior": 3,
+        "projeto": "Documentar ciclo incremental"
+      }
+    ]
+  },
+  "certificacoes_sugeridas": {
+    "backend": [
+      "Curso introdutório de APIs REST e SQL"
+    ],
+    "frontend": [
+      "Curso de acessibilidade web e JavaScript"
+    ],
+    "data_science": [
+      "Curso introdutório de estatística e aprendizado de máquina"
+    ],
+    "data_engineering": [
+      "Fundamentos de engenharia de dados e SQL"
+    ],
+    "security": [
+      "ISC2 Certified in Cybersecurity (CC) — verificar requisitos e custos atuais"
+    ],
+    "devops": [
+      "Linux Foundation — fundamentos de Linux e DevOps"
+    ],
+    "cloud": [
+      "AWS Certified Cloud Practitioner ou Azure Fundamentals AZ-900 — verificar custos e requisitos"
+    ],
+    "mobile": [
+      "Curso de React Native ou Flutter com projeto final"
+    ],
+    "qa": [
+      "ISTQB CTFL — verificar requisitos e custos"
+    ],
+    "product": [
+      "Curso de Product Discovery e métricas de produto"
+    ]
+  },
+  "penalidades": {
+    "limiar_resposta": 2,
+    "peso_minimo": 4,
+    "fator": 0.12,
+    "descricao": "Desconta até 12 pontos percentuais para cada conjunto de forte incompatibilidade; limitada a 20 pontos, mantendo o índice entre 0 e 100."
   }
 }
